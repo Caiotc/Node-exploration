@@ -1,4 +1,4 @@
-import { Readable } from "node:stream";
+import { Readable, Writable, Transform } from "node:stream";
 // Netflix ?
 process.stdin.pipe(process.stdout);
 
@@ -17,4 +17,21 @@ class OneToHundred extends Readable {
   }
 }
 
-new OneToHundred().pipe(process.stdout);
+class InverseNumberStream extends Transform {
+  _transform(chunk, enconding, callback) {
+    const transformed = Number(chunk.toString()) * -1;
+
+    callback(null, Buffer.from(String(transformed)));
+  }
+}
+
+class MultiplyByTenStream extends Writable {
+  _write(chunk, enconding, callback) {
+    console.log(Number(chunk.toString()) * 10);
+    callback();
+  }
+}
+
+new OneToHundred()
+  .pipe(new InverseNumberStream())
+  .pipe(new MultiplyByTenStream());
