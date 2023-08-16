@@ -1,0 +1,12 @@
+{
+  "name": "foundations",
+  "version": "1.0.0",
+  "description": "foundations exploration project",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/server.js"
+  },
+  "author": "Caio Theodoro de Carvalho",
+  "license": "ISC"
+}
