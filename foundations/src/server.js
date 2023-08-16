@@ -1,7 +1,5 @@
 import http from "node:http";
 
-// criate an user( name,email, ...)
-
 const users = [];
 const server = http.createServer((req, res) => {
   const { method, url } = req;
@@ -19,9 +17,9 @@ const server = http.createServer((req, res) => {
       name: "Darth",
       email: "a@a.com",
     });
-    return res.end("create users");
+    return res.writeHead(201).end("create users");
   }
-  return res.end("Hello World");
+  return res.writeHead(404).end();
 });
 
 server.listen(3333);
