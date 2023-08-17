@@ -1,36 +1,28 @@
 import http from "node:http";
+import { json } from "./middlewares/json.js";
+import { Database } from "./database.js";
 
-const users = [
-  {
-    id: 1,
-    name: "Darth",
-    email: "a@a.com",
-  },
-];
+const database = new Database();
 const server = http.createServer(async (req, res) => {
   const { method, url } = req;
   console.log(method, url);
-
-  const Buffers = [];
-  for await (const chunk of req) {
-    Buffers.push(chunk);
-  }
-
-  try {
-    req.body = JSON.parse(Buffer.concat(Buffers).toString());
-  } catch {
-    req.body = null;
-  }
+  await json(req, res);
   console.log(req.body);
 
   if (method === "GET" && url === "/users") {
-    return res
-      .setHeader("Content-type", "application/json")
-      .end(JSON.stringify(users));
+    const users = database.select("users");
+    return res.end(JSON.stringify(users));
   }
 
   if (method === "POST" && url === "/users") {
-    users.push({ id: users[users.length - 1].id + 1, ...req.body });
+    const { name, email } = req.body;
+
+    const user = {
+      id: 1,
+      name,
+      email,
+    };
+    database.insert("users", user);
 
     return res.writeHead(201).end("create users");
   }
